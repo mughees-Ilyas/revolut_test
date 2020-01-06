@@ -102,11 +102,13 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
 
     //setting states for modal when close is pressed
     const handleClose = () => {
+        setShow(false);
         setState({
             currency1: '',
             currency2:''
         });
-        setShow(false)
+        dispatch(fxrate("EUR"));
+        setFirstCurrentCurrency(currentCurrency);
     };
 
     /*
@@ -115,6 +117,10 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
      */
     function updateBaseCurrency(event) {
         clearInterval(intervalRef.current);
+        setState({
+            currency1: '',
+            currency2:''
+        });
         setFirstCurrentCurrency(event);
     }
     /*
@@ -123,6 +129,10 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
      */
     function updateSecondBaseCurrency(event) {
         clearInterval(intervalRef.current);
+        setState({
+            currency1: '',
+            currency2:''
+        });
         setSecondCurrentCurrency(event);
     }
 
@@ -143,6 +153,9 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
         // set converted values to input boxes
         const value = evt.target.value;
         let coverRate = Number(value)*Number(rates);
+        if (0.1 > Number(coverRate) ) {
+            setBalanceError('minimum balance after conversion should be at least greater than 0.1');
+        }
         setState({
             currency1: value,
             currency2: coverRate.toFixed(2)
@@ -166,6 +179,9 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
         if (value > pockets[firstCurrentCurrency] ) {
             setBalanceError('Entered amount is more than your current balance');
         }
+        else if (0.1 > Number(coverRate) ) {
+            setBalanceError('minimum balance after conversion should be greater than 0.1');
+        }
         setState({
             currency1: value.toFixed(2),
             currency2: coverRate
@@ -178,7 +194,7 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
      */
     let setNewBalance = (evt) => {
         evt.preventDefault();
-        if (balanceError.length){
+        if (balanceError.length || secondCurrentCurrency < 1){
             return;
         }
         let DataObj = pockets;

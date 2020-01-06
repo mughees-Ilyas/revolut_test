@@ -92,7 +92,7 @@ function AccountPage({dispatch, data}) {
                     <Heading>Current Accounts</Heading>
                     <Dropdown >
                         <Dropdown.Toggle variant="secondary">
-                           New currency Account.
+                           New currency Account
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
