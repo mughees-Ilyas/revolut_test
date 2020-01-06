@@ -1,4 +1,3 @@
-// export a navigation component (use react-router-dom)
 import React from "react";
 import styled, {css} from "styled-components";
 import { colors } from "../theme/colors";

@@ -35,11 +35,14 @@ function AccountPage({dispatch, data}) {
     const [showConvert, setShowConvert] = useState(false);
     const handleShowConvert = () => setShowConvert(true);
 
+    // handler to open Add funds modal
     function addBalance(currency,e) {
         e.stopPropagation();
         setCurrentCurrency(currency);
         handleShow();
     }
+
+    // handler to open open convert fund modal
     function convertBalance(currency,e) {
         e.stopPropagation();
         setCurrentCurrency(currency);
