@@ -25,6 +25,17 @@ New Pockets will be created with zero balance.
 Once the exchange modal is opened, we get the rate between two currencies after every 10 sec so if the rate gets updated in the middle of transcation the modal will reflect the changes.
 
 
+### Account Page constraints.
+You cannot add balance less than 10 in any currency.
+
+Max balance you can add in one go is 5000.
+
+Balance after Conversion should be atleast 0.1
+
+Cannot convert amount more than your current balance.
+
+zero is not a valid choice for either box.
+
 
 ## Directory Structure
 
