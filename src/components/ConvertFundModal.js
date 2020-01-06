@@ -1,5 +1,4 @@
-// export a navigation component (use react-router-dom)
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import styled from "styled-components";
 import { Button } from "../styled/Button"
 import Modal from 'react-bootstrap/Modal'
@@ -37,16 +36,27 @@ const DisplayForm = styled.div`
 `;
 //simple table using flex.
 function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatch,data }) {
+    // error for the Modal.
     const [balanceError, setBalanceError] = useState('');
+    // second pocket for conversion.
     const [secondPockets, setSecondPockets] = useState();
+    // first currency from which balance is to be taken
     const [firstCurrentCurrency, setFirstCurrentCurrency] = useState();
+    // second currency to which balance is to be added.
     const [secondCurrentCurrency, setSecondCurrentCurrency] = useState('');
+    // current rate between first and second currency
     const [rates, setRates] = useState('');
+    // state of input fileds of currencies
     const [state, setState] = useState({
         currency1: '',
         currency2: ''
     });
 
+    // reference for counter.
+    const intervalRef = useRef(0);
+
+    // on modal open create a second pocket without the value of first currency selected.
+    // also set the second currency to first element of that pocket
     useEffect(() => {
        let currencies= Object.keys(pockets);
        let tempPocket=[];
@@ -59,24 +69,38 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
        })
     },[currentCurrency,pockets,firstCurrentCurrency]);
 
+    // on modal open set the first currency from which the action was generated
     useEffect(() => {
         setFirstCurrentCurrency(currentCurrency);
     },[currentCurrency]);
 
+    // when both currencies are set. get the exchange rate between them
+    useEffect(() => {
+        function getCurrentTimer(){
+            dispatch(fxrate(firstCurrentCurrency, secondCurrentCurrency));
+        }
+        if(show){
+            intervalRef.current = setInterval(getCurrentTimer, 10000);
+            getCurrentTimer();
+        }
+
+        // destroy interval on component destroy
+        return () => {
+            clearInterval(intervalRef.current);
+        };
+    },[firstCurrentCurrency,secondCurrentCurrency,show,dispatch]);
+
+    // when you receive the rate set the rate to be used.
     useEffect(() => {
         if (data && data.rates){
             setRates(data.rates[secondCurrentCurrency]);
         }
     },[data,secondCurrentCurrency]);
 
-    useEffect(() => {
-        if(show){
-        dispatch(fxrate(firstCurrentCurrency, secondCurrentCurrency));
-        }
-    },[firstCurrentCurrency,secondCurrentCurrency,show,dispatch]);
 
 
-    //setting states for modal to add balance
+
+    //setting states for modal when close is pressed
     const handleClose = () => {
         setState({
             currency1: '',
@@ -85,36 +109,38 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
         setShow(false)
     };
 
-    function updateSecondBaseCurrency(event){
-        setSecondCurrentCurrency(event);
-    }
+    /*
+     * update first currency if user change it from dropDown
+     * {event} : value of the selected item from dropdown
+     */
     function updateBaseCurrency(event) {
+        clearInterval(intervalRef.current);
         setFirstCurrentCurrency(event);
     }
-    let setNewBalance = (evt) => {
-        evt.preventDefault();
-        if (balanceError.length){
-            return;
-        }
-        let DataObj = pockets;
-        DataObj[secondCurrentCurrency]= Number(DataObj[secondCurrentCurrency]) + Number(state.currency2);
-        DataObj[firstCurrentCurrency]= Number(DataObj[firstCurrentCurrency]) - Number(state.currency1);
-        setPockets(DataObj);
-        setState({
-            currency1: '',
-            currency2:''
-        });
-        handleClose();
-    };
+    /*
+     * update second currency if user change it from dropDown
+     * {event} : value of the selected item from dropdown
+     */
+    function updateSecondBaseCurrency(event) {
+        clearInterval(intervalRef.current);
+        setSecondCurrentCurrency(event);
+    }
+
+    /*
+     * on change input handler for first currency. validate and conversion to secondary currency
+     * {evt}: value of the input field.
+     */
     let BalanceHandler = (evt) => {
         setBalanceError('');
+        // let the user know he does not have balance to convert.
         if (evt.target.value > pockets[firstCurrentCurrency] ) {
-            setBalanceError('entered amount is more than the current balance');
+            setBalanceError('Entered amount is more than your current balance');
         }
         let decimal = evt.target.value.split(".");
         if (decimal.length > 1 && decimal[1].length > 2) {
             evt.target.value = decimal[0]+"."+decimal[1][0]+decimal[1][1]
         }
+        // set converted values to input boxes
         const value = evt.target.value;
         let coverRate = Number(value)*Number(rates);
         setState({
@@ -122,24 +148,53 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
             currency2: coverRate.toFixed(2)
         })
     };
-    let BalanceHandlerSeconday = (evt) => {
+
+    /*
+     * on change input handler for second currency. validate and conversion to secondary currency
+     * {evt}: value of the input field.
+     */
+    let BalanceHandlerSecondary = (evt) => {
         setBalanceError('');
-        if (evt.target.value > pockets[firstCurrentCurrency] ) {
-            setBalanceError('entered amount is more than the current balance');
-        }
+
         let decimal = evt.target.value.split(".");
         if (decimal.length > 1 && decimal[1].length > 2) {
             evt.target.value = decimal[0]+"."+decimal[1][0]+decimal[1][1]
         }
-        let coverRate = Number(evt.target.value);
+        let coverRate = evt.target.value;
         const value = Number(coverRate)*(1/Number(rates));
-
+        // let the user know that desired amount in second currency gets converted to the amount user does not hold in first currency.
+        if (value > pockets[firstCurrentCurrency] ) {
+            setBalanceError('Entered amount is more than your current balance');
+        }
         setState({
             currency1: value.toFixed(2),
             currency2: coverRate
         })
     };
 
+    /*
+     * submit handler for the form
+     * {evt} : event for the handler.
+     */
+    let setNewBalance = (evt) => {
+        evt.preventDefault();
+        if (balanceError.length){
+            return;
+        }
+        let DataObj = pockets;
+        // on submit add to secondary currency and seprate from first currency
+        // Ideally we should have backend call here and should not be doing it here on the frontend.
+        DataObj[secondCurrentCurrency]= Number(DataObj[secondCurrentCurrency]) + Number(state.currency2);
+        DataObj[secondCurrentCurrency] = DataObj[secondCurrentCurrency].toFixed(2);
+        DataObj[firstCurrentCurrency] = Number(DataObj[firstCurrentCurrency]) - Number(state.currency1);
+        DataObj[firstCurrentCurrency] =  DataObj[firstCurrentCurrency].toFixed(2);
+        setPockets(DataObj);
+        setState({
+            currency1: '',
+            currency2:''
+        });
+        handleClose();
+    };
     return (
         <>
             <Modal show={show} onHide={handleClose}>
@@ -200,7 +255,7 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
                                 name='currency2'
                                 step="0.01"
                                 value={state.currency2}
-                                onChange={BalanceHandlerSeconday}
+                                onChange={BalanceHandlerSecondary}
                                 required
                             />
                             <Error>
