@@ -18,6 +18,10 @@ We update the rate list every 10 second.
 ### Account page 
 Account page has your current accounts. You can Add funds and exchange funds between them.
 
+You can Also add new pockets from the dropDown list. at the start EUR, GBP, USD are by default present with some funds.
+
+New Pockets will be created with zero balance.
+
 Once the exchange modal is opened, we get the rate between two currencies after every 10 sec so if the rate gets updated in the middle of transcation the modal will reflect the changes.
 
 
@@ -48,4 +52,8 @@ React-hooks are used to maintain state through out the project.
 Styled-components are used as default style provider instead of css/sass.
 
 Bootstrap is used for modal and dropdown.
+
+## API
+
+Using "https://exchangeratesapi.io/" to get rates for the currencies.
 
