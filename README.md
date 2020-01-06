@@ -1,4 +1,4 @@
-# React_test
+# React App for Revolut Test
 
 steps to run the project
 
