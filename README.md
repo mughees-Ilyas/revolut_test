@@ -40,7 +40,7 @@ Cannot convert amount more than your current balance.
 zero is not a valid choice for either box.
 
 
-## Directory Structure
+### Directory Structure
 
 Styled folder has all the resuable style components.
 
@@ -55,7 +55,7 @@ Theme folder stores the color scheme that is used through out the project.
 Enviorment file stores the common end point for store.
 
 
-## tech stack and libraries.
+### tech stack and libraries.
 
 Redux and Redux-saga is used as default store to get data.
 
@@ -67,7 +67,18 @@ Styled-components are used as default style provider instead of css/sass.
 
 Bootstrap is used for modal and dropdown.
 
-## API
+### API
 
 Using "https://exchangeratesapi.io/" to get rates for the currencies.
+
+
+## RETROSPECTIVE 
+I have tried to make everything as generic as possible and if we provide a real backend this project will need to do quite less to adopt to it.
+
+initialzing of pockets should have been done in useEffect call if the pockets were comming from rest API like exchange rate but as I am creating them on frontend so I just initilized them within the useState hook.
+
+The currency Signs are missing. could have included the pound, dollar and euro sign but As I was going more for generic solution that can support any number of pockets and exchanges, I didnt have all the signs. I tried to find a place to get them all but didnt work out.
+
+Wanted to include Flags as well to show with currency sign but the flag libraries mostly use ALPHA-CODE-3 scheme or ALPHA-CODE-2 scheme and the API i was using was giving me currency name codes. I had planned to make a currency to flag mapper but ultimatly ran out of time for it.
+
 
