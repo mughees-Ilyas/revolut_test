@@ -10,6 +10,9 @@ steps to run the project
 
 ## Project Explanation
 
+As there is no backend, the changes are persistant only on frontend and will be lost if you refresh. React hooks are used to maintain persistance behavior on frontned
+
+
 ### Home page 
 Home page has the rate list for all the countries. Initially the base is set to EUR but User can chose a different base.
 
