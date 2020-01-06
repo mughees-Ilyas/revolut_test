@@ -106,7 +106,9 @@ function AccountPage({dispatch, data}) {
                     </Dropdown>
                     {Object.keys(pockets) &&
                     Object.keys(pockets).map((currencies, index) => (
-                        <Card key={"currency_Pocket_" + currencies} content="This is the card body!">
+                        <Card key={"currency_Pocket_" + currencies}
+                              content="IBAN number = AHS23424236073466"
+                        >
                             <DisplayRow>
                                 <div>{currencies}</div>
                                 <div>
