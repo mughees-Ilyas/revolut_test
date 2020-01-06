@@ -56,7 +56,7 @@ function Navigation() {
             Home
         </NavItem>
         <NavItem to="/Request" exact activeClassName="active">
-            Request
+            Account
         </NavItem>
     </NavBar>
           <Container>

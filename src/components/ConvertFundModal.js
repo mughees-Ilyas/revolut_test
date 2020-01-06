@@ -79,7 +79,7 @@ function AddFundModel({show, setShow,setPockets,pockets,currentCurrency, dispatc
         function getCurrentTimer(){
             dispatch(fxrate(firstCurrentCurrency, secondCurrentCurrency));
         }
-        if(show){
+        if(show && firstCurrentCurrency && secondCurrentCurrency && secondCurrentCurrency !== firstCurrentCurrency ){
             intervalRef.current = setInterval(getCurrentTimer, 10000);
             getCurrentTimer();
         }

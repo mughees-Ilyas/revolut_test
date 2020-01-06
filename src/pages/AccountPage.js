@@ -21,6 +21,7 @@ const Page = styled.div`
 const DisplayRow = styled.div`
   display: flex;
   justify-content:space-between
+   align-items: center;
 `;
 
 function AccountPage({dispatch, data}) {
