@@ -1,6 +1,8 @@
 {
   "name": "revolut_test",
   "version": "1.0.0",
+  "license": "GNU General Public License (GPL)",
+  "private": true,
   "description": "",
   "keywords": [],
   "main": "src/index.js",
@@ -20,11 +22,14 @@
     "redux-saga": "^1.0.0",
     "styled-components": "4.4.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^24.9.0"
+  },
   "scripts": {
     "start": "PORT=56753 react-scripts start",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test": "jest"
   },
   "browserslist": {
     "production": [
