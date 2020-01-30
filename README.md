@@ -6,7 +6,13 @@ steps to run the project
 
 2) execute 'npm install' to install dependencieis.
 
-3) execute 'npm run start' to start the project.
+3) execute 'npm run start' to start the project
+
+## Problem Statement.
+
+Get currency conversation rate table from any exchange rate provider.
+create currency pockets where you can store different currencies.
+provide exchange between pockets on the fly and show currency exchange rate between them.
 
 ## Project Explanation
 
