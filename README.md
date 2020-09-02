@@ -2,7 +2,7 @@
 
 steps to run the project
 
-1) clone the project
+1) clone the project.
 
 2) execute 'npm install' to install dependencieis.
 
